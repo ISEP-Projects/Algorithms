@@ -174,7 +174,7 @@ public class GTFSParser {
                 }
             }
         }
-        FileWriter writer1 = new FileWriter("data-output/stop-rel.csv");
+        FileWriter writer1 = new FileWriter("data-output/stop-rel.txt");
         writer1.write("stopId,stopName,stopDegree,stopLatitude,stopLongitude\n");
         stopMap.forEach((s1, s2) -> {
             try {
@@ -197,7 +197,7 @@ public class GTFSParser {
         });
         writer2.close();
 
-        FileWriter writer3 = new FileWriter("data-output/edge.csv");
+        FileWriter writer3 = new FileWriter("data-output/edge.txt");
         writer3.write("node1,node2,distance\n");
         linkedEdge.forEach(s -> {
             try {
