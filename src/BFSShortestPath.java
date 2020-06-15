@@ -34,7 +34,7 @@ public class BFSShortestPath {
     }
 
     public ArrayList<ArrayList<Integer>> bfsAll(EdgeWeightedGraph G) {
-        int v = G.getNodeCount() + 1;
+        int v = G.getNumNodes() + 1;
         marked = new boolean[v];
         edgeTo = new Edge[v];
         distance = new int[v];
@@ -72,7 +72,7 @@ public class BFSShortestPath {
             visitOrder.add(node);
             // In case of choice, the vertex with the smallest identifier will be chosen.
             for (Edge childEdge : G.getNode(node)) {
-                int thisNode = childEdge.to(node);
+                int thisNode = childEdge.other(node);
                 if (!marked[thisNode]) {
                     queue.add(thisNode);
                     // Mark child node
@@ -89,7 +89,7 @@ public class BFSShortestPath {
 
     // The function to do BFS traversal.
     public ArrayList<Integer> bfs(EdgeWeightedGraph G, int s) {
-        int v = G.getNodeCount() + 1;
+        int v = G.getNumNodes() + 1;
         marked = new boolean[v];
         edgeTo = new Edge[v];
         distance = new int[v];
@@ -115,7 +115,7 @@ public class BFSShortestPath {
         int thisNode = w;
         while (thisNode > -1 && thisNode != sourceNode) {
             shortestPath.add(thisNode);
-            thisNode = edgeTo[thisNode].to(thisNode);
+            thisNode = edgeTo[thisNode].other(thisNode);
             if (thisNode == sourceNode) {
                 shortestPath.add(sourceNode);
                 break;
@@ -127,16 +127,17 @@ public class BFSShortestPath {
 
     public static boolean isConnectedGraph(EdgeWeightedGraph G) {
         Integer total = new BFSShortestPath().bfs(G, 0).size();
-        return total == G.getNodeCount();
+        return total == G.getNumNodes();
     }
 
     public static void main(String[] args) throws IOException {
 
         EdgeWeightedGraph graph = new EdgeWeightedGraph("data-output/edge.txt");
 
-        BFSShortestPath BFSShortestPath = new BFSShortestPath();
-        BFSShortestPath.bfs(graph, 0);
-        ArrayList<Integer> suggestedPath = BFSShortestPath.pathTo(14);
+        BFSShortestPath bfsSP = new BFSShortestPath();
+        bfsSP.bfs(graph, 0);
+        ArrayList<Integer> suggestedPath = bfsSP.pathTo(50);
+        System.out.println("Shortest path from 0 to 50 is: ");
         System.out.println(suggestedPath);
 
     }
