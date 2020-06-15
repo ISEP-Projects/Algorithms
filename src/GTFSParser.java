@@ -8,36 +8,59 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class GTFSParser {
-    /**
-     * Calculate distance between two points in latitude and longitude taking
-     * into account height difference. If you are not interested in height
-     * difference pass 0.0. Uses Haversine method as its base.
-     *
-     * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
-     * el2 End altitude in meters
-     * @return Distance in Meters
+	
+	/*
+    1) Convert degrees to radians
+	2) Calculate Cartesian co-ordinates First
+		R≈6371km
+		x = Rcos(lat) cos(long)
+		y = Rcos(lat) sin(long)
+		z = R sin(lat)	//Can actually be re
+		
+	3) Euclidean Distance Formula
+ 		
+ 		dist((x, y, z), (a, b, c)) = √(x - a)² + (y - b)² + (z - c)²	
+ 	
+ 		R(θ2−θ1)2+cos2θ(ϕ2−ϕ1)2√.
      */
+	
     public static double distance(double lat1, double lat2, double lon1,
-                                  double lon2, double el1, double el2) {
-
-        final double R = 6371.0; // Radius of the earth
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-        double height = el1 - el2;
-
-        distance = Math.pow(distance, 2) + Math.pow(height, 2);
-
-        return Math.sqrt(distance);
+                                  double lon2) {
+    	
+    	double R = 6371000; //Earth's radius in metres
+    	double p1x, p1y, p1z, p2x, p2y, p2z;
+    	
+    	//Conversion to radians
+    	lat1 = lat1 * Math.PI / 180;
+    	lat2 = lat2 * Math.PI / 180;
+    	lon1 = lon1 * Math.PI / 180;
+    	lon2 = lon2 * Math.PI / 180;
+    	
+    	//Cartesian Co-ordinates
+    	p1x = R*Math.cos(lat1)*Math.cos(lon1);
+    	p1y = R*Math.cos(lat1)*Math.sin(lon1);
+    	p1z = R*Math.sin(lat1);
+    	
+    	p2x = R*Math.cos(lat2)*Math.cos(lon2);
+    	p2y = R*Math.cos(lat2)*Math.sin(lon2);
+    	p2z = R*Math.sin(lat2);
+    	
+        double x = (p2x - p1x) * (p2x - p1x);
+        double y = (p2y - p1y) * (p2y - p1y);
+        double z = (p2z - p1z) * (p2z - p1z);
+        
+        //double test = R * Math.sqrt( (lat2-lat1)*(lat2-lat1) + Math.cos(lat1+lat2)*Math.cos(lat1+lat2)*(lon2-lon1)*(lon2-lon1) );
+        //return test;
+        //double distance = R* Math.acos( p1x*p2x + p1y*p2y + p1z*p2z );
+        
+        double distance = Math.sqrt((x + y + z));
+  
+        return distance;
     }
+    
+    
     public static void main(String[] args) throws IOException {
-        String[] Lines = {"Undergroud"};
+        String[] Lines = {"Underground"};
 
         // original id -> new id
         HashMap<String, String> stopIdRel = new HashMap<>();
@@ -49,7 +72,7 @@ public class GTFSParser {
         Integer stopIdIndex = 0;
         HashSet<String> stopNames = new HashSet<>();
         for (String Line : Lines) {
-            String fileName = "data-input/London-" + Line + "/stops.txt";
+            String fileName = "data-input/London-Underground/stops.txt";
             FileInputStream stream = new FileInputStream(fileName);
             InputStreamReader streamReader = new InputStreamReader(stream);
             BufferedReader reader = new BufferedReader(streamReader);
@@ -98,7 +121,7 @@ public class GTFSParser {
             validSequences.put(Line, new ArrayList<>());
             // trip id -> route id
             HashMap<String, String> tripRouteRel = new HashMap<>();
-            String fileName1 = "data-input/London-" + Line + "/trips.txt";
+            String fileName1 = "data-input/London-Underground/trips.txt";
             FileInputStream stream1 = new FileInputStream(fileName1);
             InputStreamReader streamReader1 = new InputStreamReader(stream1);
             BufferedReader reader1 = new BufferedReader(streamReader1);
@@ -113,7 +136,7 @@ public class GTFSParser {
             HashSet<String> visitedRoute = new HashSet<>();
             HashSet<ArrayList<String>> stopSeqSet = new HashSet<>();
             HashMap<String, ArrayList<String>> stopSeqRel = new HashMap<>();
-            String fileName = "data-input/London-" + Line + "/stop_times.txt";
+            String fileName = "data-input/London-Underground/stop_times.txt";
             FileInputStream stream = new FileInputStream(fileName);
             InputStreamReader streamReader = new InputStreamReader(stream);
             BufferedReader reader = new BufferedReader(streamReader);
@@ -210,7 +233,7 @@ public class GTFSParser {
                 double lon1 = Double.parseDouble((String) stop1.get("longitude"));
                 double lat2 = Double.parseDouble((String) stop2.get("latitude"));
                 double lon2 = Double.parseDouble((String) stop2.get("longitude"));
-                double dis = distance(lat1, lat2, lon1, lon2, 11, 11); // London Altitude - 11m
+                double dis = distance(lat1, lat2, lon1, lon2); 
                 writer3.write(Integer.toString(s1) + "," + Integer.toString(s2) + "," + Double.toString(dis) +  "\n");
             } catch (IOException e) {
                 e.printStackTrace();
