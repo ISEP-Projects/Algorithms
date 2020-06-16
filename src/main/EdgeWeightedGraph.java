@@ -11,7 +11,6 @@ import java.util.*;
 
 public class EdgeWeightedGraph {
 
-
     private int capacity = 0;   // Max-capacity of graph
     private int numNodes = 0; // number of Nodes
     private int numEdges = 0; // number of edge

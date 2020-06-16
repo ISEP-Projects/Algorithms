@@ -112,7 +112,6 @@ public class GTFSParser {
         }
         System.out.println("all stops parsed, " + stopNames.size() + " stops in total.");
 
-        //String fileName = "src/GTFS-Data/stops.txt";
         FileWriter jsonWriter = new FileWriter("src/Output-Data/stop-detail.json");
         Gson gson = new Gson();
         String json = gson.toJson(stopMap);

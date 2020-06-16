@@ -184,9 +184,11 @@ public class Dijkstra {
         
         //System.out.println("Nodes # : " + graph.getNodeCount() + "\tEdges # " + graph.getEdgeCount());
         
-        dijkstraSP.parse(graph, 50);
-        ArrayList<Integer> suggestedPath = dijkstraSP.pathTo(94);
-        System.out.println("The shortest path(distance) from 50 to 94 is :");
+        
+        
+        dijkstraSP.parse(graph, 648);
+        ArrayList<Integer> suggestedPath = dijkstraSP.pathTo(1622);
+        System.out.println("The shortest path(distance) from 648 to 1622 is :");
         System.out.println(suggestedPath);
         
 
