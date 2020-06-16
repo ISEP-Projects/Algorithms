@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import model.Route;
@@ -19,6 +19,7 @@ public class GTFSReader {
 	HashMap<String, Stop> stopsList;
 	HashMap<Integer, Trip> tripsList;
 	HashMap<Integer, Route> routeList;
+	
 	
 	public void stopsReader(String filePath) {
 		
@@ -128,7 +129,7 @@ public class GTFSReader {
 		        	int trip_id = Integer.parseInt(splitLine[0]);
 		        	String stop_id = splitLine[3];
 		        	int stop_sequence = Integer.parseInt(splitLine[4]);
-		        	//System.out.println(splitLine[0] + "\t" + splitLine[3] + "\t" + splitLine[4]);
+		        	//System.out.println("Read Data " +trip_id + "\t" + stop_id + "\t" + stop_sequence);
 		        	
 		        	
 		        /*	Unecessary as each stop_sequence is unique to each trip. 
@@ -162,24 +163,47 @@ public class GTFSReader {
 	        			Stop s = stopsList.get(stop_id);
 	        			s.setStop_sequence(stop_sequence);
 	        			tripsList.get(trip_id).addStopList(s);
+	        			
+	        			//Trip temp = tripsList.get(trip_id);
+	        			
+	        			//System.out.println("Inserted Data " + temp.getTrip_id() + "\t" + temp.getStop(stop_id).getStop_id()+ "\t" + temp.getStop(stop_id).getStop_sequence());
+	        			
+	        			/*
+	        			
+	        			for (Entry<String, Stop> ss : temp.getStopsList().entrySet()) {
+	    				  System.out.println("Stop: " + ss.getValue().getStop_id() + " Stop_Sequence = " +ss.getValue().getStop_sequence());
+	    				}
+	        			*/
 	        		}else {
 	        			System.out.println("ERROR! Stop " + stop_id + " does not exist in stopslist");
 	        		}
 		        	
 	        	}
 	        }
+	        /*
+	        for (Entry<Integer, Trip> sList : tripsList.entrySet()) {
+			    System.out.println("\nTrip id:" + sList.getValue().getTrip_id());
+			    for (Entry<String, Stop> l : sList.getValue().getStopsList().entrySet()) {
+			    	System.out.println("Stop id:" + l.getValue().getStop_id() + "  Sequence:" +l.getValue().getStop_sequence()); 
+			    }
+			}
+	        */
+	        
+	        
+	        
 	        //All trips with their respective stops and unique stop_sequences have been created
 	       //Add trips to their respective routes by matching trip_id
         	
         	//Loop through all the Routes in the list and get their list of trips
-        	for (Entry<Integer, Route> entry : routeList.entrySet()) {
-        	    ArrayList<Integer> list = entry.getValue().getTrip_idList();
-        	    
+        	for (Entry<Integer, Route> r : routeList.entrySet()) {
+        	    ArrayList<Integer> list = r.getValue().getTrip_idList();
+        	    System.out.print(r.getValue().getRoute_id() + ":");
         	    //Loop through all trip ids in Route and add respective trip object 
         	    for (Integer id : list) {
-        	    	entry.getValue().addTrip((tripsList.get(id)) );
+        	    	r.getValue().addTrip((tripsList.get(id)) );
+        	    	//System.out.println("Trip " + r.getValue().getTrip(id)+ " added with stop" + r.getValue().getTrip(id).getStopsList()  );
                 }
-        	    System.out.println("Trips added to Route: " + entry.getValue().getRoute_id() + " " + entry.getValue().getTrip_idList());
+        	    
         	    
         	}
         	
@@ -193,7 +217,33 @@ public class GTFSReader {
 			e.printStackTrace();
 		} 
 	}
+	
+	
+	public void createEdges() {
+		
+		//Loop through all routes
+		for (Entry<Integer, Route> entry : routeList.entrySet()) {
+    	    
+			//Considering only the first trip for each route
+			Trip t = entry.getValue().getTripsList().getFirst();
+			HashMap<String, Stop> stopsList = t.getStopsList();
+    	    //Checks if there are more than 2 before creating edges
 			
+			/*
+			System.out.println("Trip: " + t.getTrip_id());
+			if(stopsList.size()>1) {
+				for (Entry<String, Stop> entrys : stopsList.entrySet()) {
+				    Stop s = entrys.getValue();
+				  System.out.println("\tStop: " + s.getStop_id() + " Stop_Sequence = " +s.getStop_sequence());
+				}   
+    	    }
+			
+			*/
+    	    //System.out.println("Trips added to Route: " + entry.getValue().getRoute_id() + " " + entry.getValue().getTrip_idList());
+    	    
+    	}
+	}
+	
 	public static void main(String[] args) {
 		String filepath = "src/GTFS-Data/stops.txt";
 		
@@ -206,6 +256,7 @@ public class GTFSReader {
 		filepath = "src/GTFS-Data/stop_times.txt";
 		gtfs.stop_timesReader(filepath);
 		
+		gtfs.createEdges();
 	}
 
 }

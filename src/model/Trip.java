@@ -1,15 +1,17 @@
 package model;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Trip {
 
 	private int trip_id;
-	private LinkedList<Stop> stopsList;
+	private HashMap<String,Stop> stopsList;
 	
+	//Constructor
 	public Trip(int trip_id) {
 		this.trip_id = trip_id;
-		stopsList = new LinkedList<Stop>();
+		stopsList = new HashMap<>();
 	}
 	
 	public int getTrip_id() {
@@ -18,14 +20,25 @@ public class Trip {
 	public void setTrip_id(int trip_id) {
 		this.trip_id = trip_id;
 	}
-	public LinkedList<Stop> getStopsList() {
+	public HashMap<String, Stop> getStopsList() {
 		return stopsList;
 	}
-	public void setStopsList(LinkedList<Stop> stopsList) {
+	public void setStopsList(HashMap<String,Stop> stopsList) {
 		this.stopsList = stopsList;
 	}
 	public void addStopList(Stop s) {
-		stopsList.add(s);
+		stopsList.put(s.getStop_id(),s);
 	}
+	
+	public Stop getStop(String s) {
+		return stopsList.get(s);
+	}
+	
+
+	@Override
+	public String toString() {
+		return "Trip [trip_id=" + trip_id + ", stopsList=" + stopsList + "]";
+	}
+	
 	
 }
