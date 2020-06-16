@@ -13,7 +13,7 @@ public class DijkstraShortestPath {
     
     
     private boolean verifyNonNegative(EdgeWeightedGraph G) {
-        for (int i = 0; i < G.getNumNodes(); i++) {
+        for (int i:G.getNodeset()) {
             LinkedList<Edge> edges = G.getNode(i);
             for (Edge n : edges) {
                 if (n.weight() < 0) {
@@ -95,7 +95,7 @@ public class DijkstraShortestPath {
         }
         
         sourceNode = s;
-        int v = G.getNumNodes() + 1;
+        int v = G.getNumNodes() + 100;
         marked = new boolean[v];
         previous = new int[v];
         distance = new double[v];

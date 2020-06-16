@@ -34,7 +34,7 @@ public class BFSShortestPath {
     }
 
     public ArrayList<ArrayList<Integer>> bfsAll(EdgeWeightedGraph G) {
-        int v = G.getNumNodes() + 1;
+        int v = G.getNumNodes() + 100;
         marked = new boolean[v];
         edgeTo = new Edge[v];
         distance = new int[v];
@@ -43,9 +43,9 @@ public class BFSShortestPath {
             distance[i] = Integer.MAX_VALUE; // +INFINITY
         }
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        for (int i = 0; i < v - 1; i++) {
-            if (!marked[i]) {
-                result.add(parse(G, i));
+        for (int node:G.getNodeset()) {
+            if (!marked[node]) {
+                result.add(parse(G, node));
             }
         }
         return result;
@@ -71,6 +71,7 @@ public class BFSShortestPath {
             int nodeDistance = distanceQueue.remove();
             visitOrder.add(node);
             // In case of choice, the vertex with the smallest identifier will be chosen.
+            //System.out.println(G.getNode(node));
             for (Edge childEdge : G.getNode(node)) {
                 int thisNode = childEdge.other(node);
                 if (!marked[thisNode]) {
@@ -89,7 +90,7 @@ public class BFSShortestPath {
 
     // The function to do BFS traversal.
     public ArrayList<Integer> bfs(EdgeWeightedGraph G, int s) {
-        int v = G.getNumNodes() + 1;
+        int v = G.getNumNodes() + 100;
         marked = new boolean[v];
         edgeTo = new Edge[v];
         distance = new int[v];

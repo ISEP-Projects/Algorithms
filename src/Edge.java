@@ -42,6 +42,17 @@ public class Edge implements Comparable<Edge> {
         return weight;
     }
 
+    public int getBetweenness() {
+        return betweenness;
+    }
+
+    public void addBetweenness(int delta) {
+        betweenness += delta;
+    }
+
+    public void cleanBetweenness() {
+        betweenness = 0;
+    }
 
     @Override
     public int compareTo(Edge o) {

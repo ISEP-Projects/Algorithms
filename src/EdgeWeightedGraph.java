@@ -2,17 +2,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class EdgeWeightedGraph {
 
-	 private int capacity = 0;   // Max-capacity of graph
+	 	private int capacity = 0;   // Max-capacity of graph
 	    private int numNodes = 0; // number of Nodes
 	    private int numEdges = 0; // number of edge
-
+		public  ArrayList<Integer> nodeIds;
 	    // Array of lists for Adjacency List Representation
 	    private LinkedList<Edge>[] adj;
 
@@ -27,7 +24,7 @@ public class EdgeWeightedGraph {
 	        
 	    	//Use HashSet instead of an ArrayList because it won't allow duplicate values to be added
 	    	//Since nodes will be repeated when reading the edges from the file, in order to ensure a node isn't added multiple times the HashSet is used.
-	    	HashSet<Integer> set = new HashSet<>();
+			HashSet<Integer> nodeset = new HashSet<>();
 	 
 	        
 	        File file = new File(filePath);
@@ -42,8 +39,8 @@ public class EdgeWeightedGraph {
 		        }
 		        while ((line = br.readLine()) != null) {
 		        	String[] splitLine = line.split(",");
-		        	set.add(Integer.parseInt(splitLine[0]));
-		        	set.add(Integer.parseInt(splitLine[1]));
+		        	nodeset.add(Integer.parseInt(splitLine[0]));
+		        	nodeset.add(Integer.parseInt(splitLine[1]));
 		        	//System.out.println(splitLine[0] + "\t" + splitLine[1] + "\t" + splitLine[2]);
 
 		        }
@@ -58,15 +55,15 @@ public class EdgeWeightedGraph {
 	        //Missing Nodes 151, 201, 320, 353
 	        
 	        //Find Largest number in the set
-	        ArrayList<Integer> nodeIds = new ArrayList<Integer>(set);
+			 nodeIds = new ArrayList<Integer>(nodeset);
 	        int size = Collections.max(nodeIds) + 1;
 	        
 	        //System.out.println("Number of nodes: " + size);
 	        capacity = size;
 	        //size = 2591;
 	        adj = new LinkedList[capacity];
-	        for (int i = 0; i < capacity; ++i)
-	            addVertex(i);
+	        for (int node:nodeIds)
+	            addVertex(node);
 		        
 	        try (BufferedReader br = new BufferedReader(new FileReader(file))) {     
 		        String line;
@@ -121,6 +118,7 @@ public class EdgeWeightedGraph {
 	        }
 	        return null;
 	    }
+	    public ArrayList<Integer> getNodeset(){return nodeIds;}
 
 	    public int getNumNodes() {
 	        return numNodes;
