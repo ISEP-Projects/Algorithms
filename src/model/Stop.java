@@ -8,8 +8,9 @@ public class Stop {
 	private Double stop_lat;
 	private Double stop_lon;
 	private int stop_sequence;
+	private int route_id;
 	
-	
+	//Constructor
 	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon) {
 		super();
 		this.id = id;
@@ -19,7 +20,19 @@ public class Stop {
 		this.stop_lon = stop_lon;
 		this.stop_sequence = -1;	//Unset value
 	}
-	
+
+	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence,
+			int route_id) {
+		super();
+		this.id = id;
+		this.stop_id = stop_id;
+		this.stop_name = stop_name;
+		this.stop_lat = stop_lat;
+		this.stop_lon = stop_lon;
+		this.stop_sequence = stop_sequence;
+		this.route_id = route_id;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -57,6 +70,14 @@ public class Stop {
 
 	public void setStop_sequence(int stop_sequence) {
 		this.stop_sequence = stop_sequence;
+	}
+
+	public int getRoute_id() {
+		return route_id;
+	}
+
+	public void setRoute_id(int route_id) {
+		this.route_id = route_id;
 	}
 
 	@Override

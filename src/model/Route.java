@@ -1,18 +1,15 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Route {
 
 	private int route_id;
-	
-	private int trip_id;	//Taking only 1 trip data
-	private Trip trip;
-	
 	//private ArrayList<Integer> trip_idList = new ArrayList<Integer>();	//id of all trips so that complete trip object can be added to respective route
 	//private LinkedList<Stop> stopsList = new LinkedList<Stop>(); 
-	//private LinkedList<Trip> tripsList = new LinkedList<Trip>();
+	private HashMap<Integer, Trip> tripsList = new HashMap<Integer, Trip>();
 	
 	//Constructor
     public Route(int route_id){
@@ -25,28 +22,33 @@ public class Route {
 	public void setRoute_id(int route_id) {
 		this.route_id = route_id;
 	}
-
-	public int getTrip_id() {
-		return trip_id;
+	
+	public void addTrip(Trip t) {
+		tripsList.put(t.getTrip_id(), t);
 	}
 
-	public void setTrip_id(int trip_id) {
-		this.trip_id = trip_id;
+	public HashMap<Integer, Trip> getTripsList() {
+		return tripsList;
 	}
 
-	public Trip getTrip() {
-		return trip;
+	public void setTripsList(HashMap<Integer, Trip> tripsList) {
+		this.tripsList = tripsList;
 	}
-
-	public void setTrip(Trip trip) {
-		this.trip = trip;
+	
+	public Trip getTrip(int n) {
+		return tripsList.get(n);
+	}
+	
+	public void updateTrip(Trip t) {
+		tripsList.remove(t.getTrip_id());
+		tripsList.put(t.getTrip_id(), t);
 	}
 
 	@Override
 	public String toString() {
-		return "Route [route_id=" + route_id + ", trip_id=" + trip_id + ", trip=" + trip + "]";
+		return "Route [route_id=" + route_id + ", tripsList=" + tripsList + "]";
 	}
-
+	
 	
 	
 }

@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import model.Route;
 import model.Stop;
@@ -18,7 +20,7 @@ public class GTFSReader {
 
 	HashMap<String, Stop> stopsList;
 	HashMap<Integer, Trip> tripsList;
-	HashMap<Integer, Route> routeList;
+	HashMap<Integer, Route> routesList;
 	
 	
 	public void stopsReader(String filePath) {
@@ -52,6 +54,8 @@ public class GTFSReader {
 	        	}
 
 	        }
+	        System.out.println(filePath + " successfully parsed");
+	        System.out.println(stopsList.size() + " stops have been created");
         } catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -60,10 +64,11 @@ public class GTFSReader {
 		
 	}
 	
+	//trips.txt
 	public void tripsReader(String filePath) {
 		
 		tripsList = new HashMap<>();
-		routeList = new HashMap<>();
+		routesList = new HashMap<>();
 		//Extract required data from trips.txt
 		File file = new File(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -82,23 +87,40 @@ public class GTFSReader {
 	        	if(splitLine.length == 3) {
 		        	int route_id = Integer.parseInt(splitLine[0]);
 		        	int trip_id = Integer.parseInt(splitLine[2]);
-		        	
+		        			        	
 		        	//Create Route and add to list if not added
-		        	if(!routeList.containsKey(route_id)) {
+		        	if(!routesList.containsKey(route_id)) {
 		        		Route r = new Route(route_id);
-		        		r.addTrip_id(trip_id);
-		        		routeList.put(route_id, r);
-		        		//If route already added to the list then just add the new trip_id
+		        		//r.setTrip_id(trip_id);
+		        		Trip t = new Trip(trip_id);
+		        		t.setRoute_id(route_id);
+		        		//r.setTrip(t);
+		        		r.addTrip(t);
+		        		tripsList.put(trip_id, t);
+		        		routesList.put(route_id, r);
 		        	} else {
-		        		routeList.get(route_id).addTrip_id(trip_id);
+		        		Trip t = new Trip(trip_id);
+		        		t.setRoute_id(route_id);
+		        		tripsList.put(trip_id, t);
+		        		routesList.get(route_id).addTrip(t);
 		        	}
 		        	//routeList.get(route_id);
 		        	
 	        	}
 	        }
 	        System.out.println(filePath + " successfully parsed");
-	        System.out.println(routeList.size() + " routes have been created");
-	        //System.out.println(routeList.toString());
+	        System.out.println(routesList.size() + " routes have been created");
+	        
+	        /*
+        	for (Entry<Integer, Route> r : routesList.entrySet()) {
+        		System.out.println("\nRoute:" + r.getValue().getRoute_id());
+            	for (Entry<Integer, Trip> temp : r.getValue().getTripsList().entrySet()) {
+        		    System.out.print("Trip:" + temp.getValue().getTrip_id() + "\t");
+        		}
+
+        	}
+        	*/
+	        
 	        
         } catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -121,91 +143,74 @@ public class GTFSReader {
 	        	}
 	        }
 	        
-	        while ((line = br.readLine()) != null) {
+	        
+	        while ((line = br.readLine()) != null ) {
 	        	
 	        	String[] splitLine = line.split(",");
 	        	
 	        	if(splitLine.length == 7) {
+		
 		        	int trip_id = Integer.parseInt(splitLine[0]);
 		        	String stop_id = splitLine[3];
 		        	int stop_sequence = Integer.parseInt(splitLine[4]);
+		        	
 		        	//System.out.println("Read Data " +trip_id + "\t" + stop_id + "\t" + stop_sequence);
+					
+		        	Stop temp = stopsList.get(stop_id);
 		        	
+		        	int id = temp.getId();
+		        	String stop_name = temp.getStop_name();
+		        	Double stop_lat = temp.getStop_lat();
+		        	Double stop_lon = temp.getStop_lon();
+		        	int route_id = tripsList.get(trip_id).getRoute_id();
 		        	
-		        /*	Unecessary as each stop_sequence is unique to each trip. 
-		         * Instead it should be assigned after is Stop is added to a particular trip	
-        	
-		        //Insert stop_sequence information in all stops in the list
-		        	
-		        	//Check if stop is saved in list and stop sequence isn't set
-		        	if(stopsList.containsKey(stop_id)) {
-		        		//Checks if stop_sequence is already set or not
-		        		if(stopsList.get(stop_id).getStop_sequence() == -1)
-		        			stopsList.get(stop_id).setStop_sequence(stop_sequence);
-		        		
-		        		//If stop doesn't exist
-		        	} else {
-		        		System.out.println("ERROR! Stop: " + stop_id + " doesn't exist in list!");
-		        	}
-		        	
-		        */	
-			        
-		        //Create trip object containing all the stops visited
-			        	
-		        	//Check if trip is already added to list and if not creates a trip & add to tripsList	
-		        	if(!tripsList.containsKey(trip_id)){
-		        		Trip t = new Trip(trip_id);
-		        		tripsList.put(trip_id, t);
-		        	}
-	        	
-		        	//Add Stop to the respective trip
-		        	if(stopsList.containsKey(stop_id)) {
-	        			Stop s = stopsList.get(stop_id);
-	        			s.setStop_sequence(stop_sequence);
-	        			tripsList.get(trip_id).addStopList(s);
-	        			
-	        			//Trip temp = tripsList.get(trip_id);
-	        			
-	        			//System.out.println("Inserted Data " + temp.getTrip_id() + "\t" + temp.getStop(stop_id).getStop_id()+ "\t" + temp.getStop(stop_id).getStop_sequence());
-	        			
-	        			/*
-	        			
-	        			for (Entry<String, Stop> ss : temp.getStopsList().entrySet()) {
-	    				  System.out.println("Stop: " + ss.getValue().getStop_id() + " Stop_Sequence = " +ss.getValue().getStop_sequence());
-	    				}
-	        			*/
-	        		}else {
-	        			System.out.println("ERROR! Stop " + stop_id + " does not exist in stopslist");
-	        		}
-		        	
+	        		//Create new stop with all the data
+		        	//Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence, int route_id)
+	        		Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon,stop_sequence,route_id);	        		
+    				tripsList.get(trip_id).addStopList(s);
+    				//System.out.println("Trip: " + tripsList.get(trip_id).getTrip_id() + "\tStop:" + stop_id  + " Route_id = " + tripsList.get(trip_id).getStop(stop_id).getRoute_id());	        	
 	        	}
+	        	       	
 	        }
+	        
 	        /*
-	        for (Entry<Integer, Trip> sList : tripsList.entrySet()) {
-			    System.out.println("\nTrip id:" + sList.getValue().getTrip_id());
-			    for (Entry<String, Stop> l : sList.getValue().getStopsList().entrySet()) {
-			    	System.out.println("Stop id:" + l.getValue().getStop_id() + "  Sequence:" +l.getValue().getStop_sequence()); 
-			    }
-			}
+	        for(int i = 1; i< 10; i++) {
+	        	System.out.println("\nTrip id:" + tripsList.get(i).getTrip_id());
+	    		for (Entry<String, Stop> l : tripsList.get(i).getStopsList().entrySet()) {
+			    	System.out.println("Route_id: " +l.getValue().getRoute_id() +"  Stop id:" + l.getValue().getStop_id() + "  Sequence:" +l.getValue().getStop_sequence()); 
+			    }	
+	        }
 	        */
-	        
-	        
 	        
 	        //All trips with their respective stops and unique stop_sequences have been created
 	       //Add trips to their respective routes by matching trip_id
         	
-        	//Loop through all the Routes in the list and get their list of trips
-        	for (Entry<Integer, Route> r : routeList.entrySet()) {
-        	    ArrayList<Integer> list = r.getValue().getTrip_idList();
-        	    System.out.print(r.getValue().getRoute_id() + ":");
-        	    //Loop through all trip ids in Route and add respective trip object 
-        	    for (Integer id : list) {
-        	    	r.getValue().addTrip((tripsList.get(id)) );
-        	    	//System.out.println("Trip " + r.getValue().getTrip(id)+ " added with stop" + r.getValue().getTrip(id).getStopsList()  );
-                }
-        	    
-        	    
+	        	//Loop through all the Routes in the list and add list of trips
+        	for (Entry<Integer, Route> r : routesList.entrySet()) {
+        		//System.out.println("Route:" +r.getValue().getRoute_id());        		
+        		for (Entry<Integer, Trip> trip : r.getValue().getTripsList().entrySet()) {
+        			//Trip t = tripsList.get(trip.getValue().getTrip_id());
+        			//r.getValue().updateTrip(t);
+        			//System.out.println("Trip: " + trip.getValue().getTrip_id());
+        			for (Entry<String, Stop> stop : trip.getValue().getStopsList().entrySet()) {
+        				int stop_sequence = tripsList.get(trip.getValue().getTrip_id()).getStop(stop.getValue().getStop_id()).getStop_sequence();
+        				stop.getValue().setStop_sequence(stop_sequence);
+        				//System.out.println("Id: " +stop.getValue().getStop_id() +" Sequence: " + stop.getValue().getStop_sequence());
+        			}
+    			}
+      		
+        	    //System.out.print(r.getValue().getRoute_id() + ":");
         	}
+        	
+        		
+        	for (Entry<Integer, Route> r : routesList.entrySet()) {
+	        	//System.out.print("Route: " +r.getValue().getRoute_id() + "\tTrip: " + r.getValue().getTrip().getTrip_id() +"\nStops:");
+	        	//for (Entry<String, Stop> list : r.getValue().getTrip().getStopsList().entrySet()) {
+	        		//System.out.println("Id: " +list.getValue().getStop_id() +" Sequence: " + list.getValue().getStop_sequence());
+	        	//}
+	        	
+        	}
+        	
         	
 	        System.out.println(filePath + " successfully parsed");
 	        System.out.println(tripsList.size() + " trips have been created");
@@ -218,30 +223,37 @@ public class GTFSReader {
 		} 
 	}
 	
-	
 	public void createEdges() {
-		
-		//Loop through all routes
-		for (Entry<Integer, Route> entry : routeList.entrySet()) {
-    	    
-			//Considering only the first trip for each route
-			Trip t = entry.getValue().getTripsList().getFirst();
-			HashMap<String, Stop> stopsList = t.getStopsList();
-    	    //Checks if there are more than 2 before creating edges
-			
-			/*
-			System.out.println("Trip: " + t.getTrip_id());
-			if(stopsList.size()>1) {
-				for (Entry<String, Stop> entrys : stopsList.entrySet()) {
-				    Stop s = entrys.getValue();
-				  System.out.println("\tStop: " + s.getStop_id() + " Stop_Sequence = " +s.getStop_sequence());
-				}   
-    	    }
-			
-			*/
-    	    //System.out.println("Trips added to Route: " + entry.getValue().getRoute_id() + " " + entry.getValue().getTrip_idList());
-    	    
+
+		for (Entry<Integer, Route> rList : routesList.entrySet()) {
+        	for (Entry<Integer, Trip> tList : rList.getValue().getTripsList().entrySet()) {
+        		TreeMap<Integer, Stop> newOrderedRouteList = new TreeMap<Integer, Stop>();
+        		for (Entry<String, Stop> sList : tList.getValue().getStopsList().entrySet()) {
+        			newOrderedRouteList.put(sList.getValue().getStop_sequence(), sList.getValue());
+        		}
+        		//System.out.println(newOrderedRouteList.toString());
+        	}     	
+        	//System.out.println("Id: " +list.getValue().getStop_id() +" Sequence: " + list.getValue().getStop_sequence());	
     	}
+		
+	}
+	
+	public void checkresults() {
+		int check = 0;
+		//Loop through all routes
+		for (Entry<Integer, Route> r : routesList.entrySet()) {
+			System.out.println("Route: " +r.getValue().getRoute_id());
+			for (Entry<Integer, Trip> temp : r.getValue().getTripsList().entrySet()) {
+				System.out.println("Trip: " + temp.getKey());
+				for (Entry<String, Stop> entrys : temp.getValue().getStopsList().entrySet()) {
+				    Stop s = entrys.getValue();
+				  System.out.println("Stop: " + s.getStop_id() + "\tStop_Sequence = " +s.getStop_sequence()+ "\t Route_id = " +s.getRoute_id());
+				}
+			}
+			check++;
+			if(check == 500)
+				break;
+    	}/**/
 	}
 	
 	public static void main(String[] args) {
@@ -257,6 +269,8 @@ public class GTFSReader {
 		gtfs.stop_timesReader(filepath);
 		
 		gtfs.createEdges();
+		
+		//gtfs.checkresults();
 	}
 
 }

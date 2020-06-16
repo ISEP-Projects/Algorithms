@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Trip {
 
 	private int trip_id;
+	private int route_id;
 	private HashMap<String,Stop> stopsList;
 	
 	//Constructor
@@ -33,12 +34,21 @@ public class Trip {
 	public Stop getStop(String s) {
 		return stopsList.get(s);
 	}
-	
+
+	public int getRoute_id() {
+		return route_id;
+	}
+
+	public void setRoute_id(int route_id) {
+		this.route_id = route_id;
+	}
 
 	@Override
 	public String toString() {
 		return "Trip [trip_id=" + trip_id + ", stopsList=" + stopsList + "]";
 	}
+	
+
 	
 	
 }
