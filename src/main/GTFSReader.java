@@ -32,6 +32,7 @@ public class GTFSReader {
 	
 	HashMap<String,Edge> edgesList;
 	
+	//Parsing stops.txt
 	public void stopsReader(String filePath) {
 		
 		stopsList = new HashMap<>();
@@ -45,7 +46,7 @@ public class GTFSReader {
 	              //System.out.print(splitLine[i] + "\t");
 	        	}
 	        }
-	        int id = 1; //Number id that can be used instead of the text stop_id. Maybe more useful?
+	        int id = 1; //Number id that can be used instead of the text stop_id
 	        while ((line = br.readLine()) != null) {
 	        	
 	        	String[] splitLine = line.split(",");
@@ -55,8 +56,9 @@ public class GTFSReader {
 		        	String stop_name = splitLine[2];
 		        	Double stop_lat = Double.parseDouble(splitLine[3]);
 		        	Double stop_lon= Double.parseDouble(splitLine[4]);
+		        	String parent_station = splitLine[7];
 		        	
-		        	Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon);
+		        	Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon, parent_station);
 		        	stopsList.put(stop_id, s);	//Add newly created stop to Hashmap with stop_id as the key
 		        	//System.out.println(stopsList.get(stop_id).toString());
 		        	id++;
@@ -73,7 +75,7 @@ public class GTFSReader {
 		
 	}
 	
-	//trips.txt
+	//Parsing trips.txt
 	public void tripsReader(String filePath) {
 		
 		tripsList = new HashMap<>();
@@ -161,7 +163,7 @@ public class GTFSReader {
 		        	String stop_id = splitLine[3];
 		        	int stop_sequence = Integer.parseInt(splitLine[4]);
 		        	
-		        	//System.out.println("Read Data " +trip_id + "\t" + stop_id + "\t" + stop_sequence);
+		        	//System.out.println("Read Data " +trip_id + "\t" + stop_id  + "\t" + stop_sequence);
 					
 		        	Stop temp = stopsList.get(stop_id);
 		        	
@@ -171,6 +173,7 @@ public class GTFSReader {
 		        	Double stop_lon = temp.getStop_lon();
 		        	int route_id = tripsList.get(trip_id).getRoute_id();
 		        	
+		        	//SAVING Stop that has a parent station with the parent station's id
 	        		//Create new stop with all the data
 		        	//Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence, int route_id)
 	        		Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon,stop_sequence,route_id);	        		
@@ -180,48 +183,27 @@ public class GTFSReader {
 	        	       	
 	        }
 	        
-	        /*
-	        for(int i = 1; i< 10; i++) {
-	        	System.out.println("\nTrip id:" + tripsList.get(i).getTrip_id());
-	    		for (Entry<String, Stop> l : tripsList.get(i).getStopsList().entrySet()) {
-			    	System.out.println("Route_id: " +l.getValue().getRoute_id() +"  Stop id:" + l.getValue().getStop_id() + "  Sequence:" +l.getValue().getStop_sequence()); 
-			    }	
-	        }
-	        */
-	        
 	        //All trips with their respective stops and unique stop_sequences have been created
-	       //Add trips to their respective routes by matching trip_id
+	        //Add trips to their respective routes by matching trip_id
         	
-	        	//Loop through all the Routes in the list and add list of trips
+	        //Loop through all the Routes in the list and add list of trips
         	for (Entry<Integer, Route> r : routesList.entrySet()) {
-        		//System.out.println("Route:" +r.getValue().getRoute_id());        		
+        		        		
         		for (Entry<Integer, Trip> trip : r.getValue().getTripsList().entrySet()) {
-        			//Trip t = tripsList.get(trip.getValue().getTrip_id());
-        			//r.getValue().updateTrip(t);
-        			//System.out.println("Trip: " + trip.getValue().getTrip_id());
+        			int tripId = trip.getValue().getTrip_id();
+        			//Save stop_sequence to stops with respect to a particular trip on a particular route
         			for (Entry<String, Stop> stop : trip.getValue().getStopsList().entrySet()) {
-        				int stop_sequence = tripsList.get(trip.getValue().getTrip_id()).getStop(stop.getValue().getStop_id()).getStop_sequence();
+        				String stopId = stop.getValue().getStop_id();
+        				//Take stop_sequence saved on tripsList and update that data in the stop stored in the routes list
+        				int stop_sequence = tripsList.get(tripId).getStop(stopId).getStop_sequence();
         				stop.getValue().setStop_sequence(stop_sequence);
-        				//System.out.println("Id: " +stop.getValue().getStop_id() +" Sequence: " + stop.getValue().getStop_sequence());
         			}
-    			}
-      		
-        	    //System.out.print(r.getValue().getRoute_id() + ":");
-        	}
-        	
-        		
-        	for (Entry<Integer, Route> r : routesList.entrySet()) {
-	        	//System.out.print("Route: " +r.getValue().getRoute_id() + "\tTrip: " + r.getValue().getTrip().getTrip_id() +"\nStops:");
-	        	//for (Entry<String, Stop> list : r.getValue().getTrip().getStopsList().entrySet()) {
-	        		//System.out.println("Id: " +list.getValue().getStop_id() +" Sequence: " + list.getValue().getStop_sequence());
-	        	//}
-	        	
-        	}
-        	
+    			}     		
+        	    
+        	}        	
         	
 	        System.out.println(filePath + " successfully parsed");
 	        System.out.println(tripsList.size() + " trips have been created");
-	        //System.out.println(routeList.toString());
 	        
         } catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -229,35 +211,6 @@ public class GTFSReader {
 			e.printStackTrace();
 		} 
 	}
-	
-	/*
-	public static HashMap<String,Stop> sortByValue(HashMap<String,Stop> hm) 
-    { 
-        // Create a list from elements of HashMap 
-        List<Map.Entry<String,Stop> > list =  new LinkedList<Map.Entry<String,Stop> >(hm.entrySet()); 
-  
-        // Sort the list 
-        Collections.sort(list, new Comparator<Map.Entry<String,Stop> >() { 
-            public int compare(Map.Entry<String,Stop> e1,Map.Entry<String,Stop> e2){ 
-                
-            	int v1 = e1.getValue().getStop_sequence(); 
-            	int v2 = e2.getValue().getStop_sequence(); 
-            	//res=(num1>num2) ? (num1+num2):(num1-num2)
-            	int min;
-            	min = (v1<v2) ? v1 : v2;
-            	return min;
-            	//return (o1.getValue()).compareTo(o2.getValue().ge); 
-            } 
-        }); 
-          
-        // put data from sorted list to hashmap  
-        HashMap<String,Stop> temp = new LinkedHashMap<String,Stop>(); 
-        for (Map.Entry<String,Stop> aa : list) { 
-            temp.put(aa.getKey(), aa.getValue()); 
-        } 
-        return temp; 
-    } 
-	*/
 	
 	
 	//Calculate distance between two points
@@ -298,14 +251,15 @@ public class GTFSReader {
 	public void createEdges() {
 
 		edgesList = new HashMap<String,Edge>();
+		//System.out.println("Number of routes:" +routesList.size());
 		
-		System.out.println("Number of routes:" +routesList.size());
+		//Loop through all routes and use one trip
 		for (Entry<Integer, Route> rList : routesList.entrySet()) {
-			//System.out.println("Route: " + rList.getValue().getRoute_id());
-			int max = 0, tripMax = 0;
 			
-			//Find Trip with the most Stops = The trip that visits all the stations			
+			int max = 0, tripMax = 0;
 			HashMap<String,Stop> maxStopsList = null;
+			
+			//Find Trip with the most Stops = The trip that visits all the stations						
 			for (Entry<Integer, Trip> tList : rList.getValue().getTripsList().entrySet()) {
 				if(tList.getValue().getStopsList().size() > max) {
 					maxStopsList = tList.getValue().getStopsList();

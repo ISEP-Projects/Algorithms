@@ -10,9 +10,11 @@ public class Stop implements Comparable<Stop>{
 	private Double stop_lon;
 	private int stop_sequence;
 	private int route_id;
+	private String parent_station;
+
 	
 	//Constructor
-	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon) {
+	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, String parent_station) {
 		super();
 		this.id = id;
 		this.stop_id = stop_id;
@@ -21,6 +23,7 @@ public class Stop implements Comparable<Stop>{
 		this.stop_lon = stop_lon;
 		this.stop_sequence = -1;	//Unset value
 		this.route_id = 0;
+		this.parent_station = parent_station;
 	}
 
 	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence,
@@ -80,6 +83,14 @@ public class Stop implements Comparable<Stop>{
 
 	public void setRoute_id(int route_id) {
 		this.route_id = route_id;
+	}
+	
+	public String getParent_station() {
+		return parent_station;
+	}
+
+	public void setParent_station(String parent_station) {
+		this.parent_station = parent_station;
 	}
 
 	@Override

@@ -1,17 +1,10 @@
 package main;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 
 public class BFSShortestPath {
