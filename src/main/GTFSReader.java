@@ -117,6 +117,7 @@ public class GTFSReader {
 	        }
 	        System.out.println(filePath + " successfully parsed");
 	        System.out.println(routesList.size() + " routes have been created");
+	        System.out.println(tripsList.size() + " trips have been created");
 	        
 	        /*
         	for (Entry<Integer, Route> r : routesList.entrySet()) {
@@ -372,6 +373,46 @@ public class GTFSReader {
 		writer.close();
 	}
 	
+	public void outputRoutesFile() throws IOException {
+		File file = new File("src/GTFS-Data/routes.txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+	
+        	String line;
+	        if((line = br.readLine()) != null) {
+	        	String[] splitLine = line.split(",");
+	        	for (int i = 0; i < splitLine.length; i++) {
+	        	}
+	        }
+ 
+	        while ((line = br.readLine()) != null ) {
+	        	String[] splitLine = line.split(",");
+	        	//route_id,agency_id,route_short_name,route_long_name,route_type
+	        	if(splitLine.length == 5) {
+	        		int route_id = Integer.parseInt(splitLine[0]);
+		        	String route_long_name = splitLine[3];
+		        	if(routesList.containsKey(route_id)) {
+		        		routesList.get(route_id).setRoute_name(route_long_name);
+		        		//System.out.println("Updated: " + routesList.get(route_id).getRoute_name());
+		        	}
+	        	}
+	        }
+        }
+        
+        //Enter data into routes.txt file
+        FileWriter writer = null;
+		try {
+			writer = new FileWriter("src/Output-Data/routes.txt");
+			writer.write("route_id, route_name, trips\n");
+			for (Entry<Integer, Route> route : routesList.entrySet()) {			
+				writer.write(route.toString() +  "\n");	
+			}
+		}catch (IOException e) {
+            e.printStackTrace();
+        }
+		writer.close();
+        
+	}
+	
 	public void outputEdgesFile() throws IOException {
 		
 		//HashSet<Edge> edgesList = new HashSet<Edge>();
@@ -425,8 +466,9 @@ public class GTFSReader {
 		gtfs.createEdges();
 		
 		try {
-			gtfs.outputEdgesFile();
-			gtfs.outputStopsFile();
+			//gtfs.outputEdgesFile();
+			//gtfs.outputStopsFile();
+			gtfs.outputRoutesFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
