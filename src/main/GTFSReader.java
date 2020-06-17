@@ -170,6 +170,9 @@ public class GTFSReader {
 		        	Double stop_lon = temp.getStop_lon();
 		        	int route_id = tripsList.get(trip_id).getRoute_id();
 		        	
+		        	//Add Route_id to stops lists for when writing to file
+		        	stopsList.get(stop_id).setRoute_id(route_id);
+		        	
 	        		//Create new stop with all the data
 		        	//Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence, int route_id)
 	        		Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon,stop_sequence,route_id);	        		
@@ -426,6 +429,7 @@ public class GTFSReader {
 		
 		try {
 			gtfs.outputEdgesFile();
+			gtfs.outputStopsFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
