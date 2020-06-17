@@ -170,9 +170,6 @@ public class GTFSReader {
 		        	Double stop_lon = temp.getStop_lon();
 		        	int route_id = tripsList.get(trip_id).getRoute_id();
 		        	
-		        	//Add Route_id to stops lists for when writing to file
-		        	stopsList.get(stop_id).setRoute_id(route_id);
-		        	
 	        		//Create new stop with all the data
 		        	//Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence, int route_id)
 	        		Stop s = new Stop(id,stop_id,stop_name,stop_lat,stop_lon,stop_sequence,route_id);	        		
@@ -363,11 +360,11 @@ public class GTFSReader {
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter("src/Output-Data/stops.txt");
-			writer.write("id, stop_id, stop_name, latitude, longitude, route_id\n");
+			writer.write("id, stop_id, stop_name, latitude, longitude\n");
 			for (Entry<String, Stop> stop : stopsList.entrySet()) {				
 				writer.write(Integer.toString(stop.getValue().getId() ) + "," + stop.getValue().getStop_id() + "," 
 			+ stop.getValue().getStop_name() + "," + Double.toString(stop.getValue().getStop_lat() ) 
-			+ "," + Double.toString(stop.getValue().getStop_lon() ) + "," + Integer.toString(stop.getValue().getRoute_id()) +  "\n");	
+			+ "," + Double.toString(stop.getValue().getStop_lon() ) +  "\n");	
 			}
 		}catch (IOException e) {
             e.printStackTrace();

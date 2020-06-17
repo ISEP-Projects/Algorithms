@@ -20,6 +20,7 @@ public class Stop implements Comparable<Stop>{
 		this.stop_lat = stop_lat;
 		this.stop_lon = stop_lon;
 		this.stop_sequence = -1;	//Unset value
+		this.route_id = 0;
 	}
 
 	public Stop(int id, String stop_id, String stop_name, Double stop_lat, Double stop_lon, int stop_sequence,
