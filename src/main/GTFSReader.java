@@ -373,6 +373,21 @@ public class GTFSReader {
 		writer.close();
 	}
 	
+	
+	public void outputTripsFile() throws IOException {
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter("src/Output-Data/trips.txt");
+			writer.write("trip_id, route_id, List of stops\n");
+			for (Entry<Integer, Trip> trip : tripsList.entrySet()) {			
+				writer.write(trip.getValue().getTrip_id() +", " + trip.getValue().getRoute_id() + " Stops: " + trip.getValue().getStopsString() +  "\n");	
+			}
+		}catch (IOException e) {
+            e.printStackTrace();
+        }
+		writer.close();
+	}
+		
 	public void outputRoutesFile() throws IOException {
 		File file = new File("src/GTFS-Data/routes.txt");
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -461,14 +476,14 @@ public class GTFSReader {
 		gtfs.tripsReader(filepath);
 		
 		filepath = "src/GTFS-Data/stop_times.txt";
-		gtfs.stop_timesReader(filepath);
-		
+		gtfs.stop_timesReader(filepath);		
 		gtfs.createEdges();
 		
 		try {
 			//gtfs.outputEdgesFile();
 			//gtfs.outputStopsFile();
-			gtfs.outputRoutesFile();
+			//gtfs.outputRoutesFile();
+			gtfs.outputTripsFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

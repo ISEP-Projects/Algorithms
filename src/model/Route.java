@@ -67,7 +67,7 @@ public class Route {
 			s+= Integer.toString(trip.getValue().getTrip_id()) + ",";
 		}
 
-		return "Route:" +route_id + "," + route_name + "\tTrips: " + s;
+		return "," + route_name + "\tTrips: " + s;
 	}
 	
 	

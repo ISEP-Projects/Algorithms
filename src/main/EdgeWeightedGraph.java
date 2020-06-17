@@ -124,6 +124,16 @@ public class EdgeWeightedGraph {
         return null;
     }
 
+    public ArrayList<Integer> getNodeset(){
+    	ArrayList<Integer> NodeIdList = new ArrayList<Integer>();
+    	for (int i = 0; i < capacity; i++) {
+            if ((adj[i] != null) && adj[i].size()>1 ) {
+            	NodeIdList.add(i);
+            }
+    	}
+    	return NodeIdList;
+    }
+    
     public int getNumNodes() {
         return numNodes;
     }
@@ -160,13 +170,14 @@ public class EdgeWeightedGraph {
     // Print the whole graph
     public void print() {
         for (int i = 0; i < capacity; i++) {
-            System.out.print(i + ": ");
-            if (adj[i] != null) {
-                for (Edge n : adj[i]) {
+            if ((adj[i] != null) && adj[i].size()>1 ) {
+                System.out.print(i + ": ");
+                for (Edge n : adj[i]) {               	
                     System.out.print(n + ", ");
                 }
+                System.out.println();
             }
-            System.out.println();
+            
         }
     }
 

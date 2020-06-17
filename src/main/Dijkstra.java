@@ -1,12 +1,7 @@
 package main;
 
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class Dijkstra {
@@ -178,20 +173,21 @@ public class Dijkstra {
 
     public static void main(String[] args) throws IOException {
     	
-        EdgeWeightedGraph graph = new EdgeWeightedGraph("src/Output-Data/edge.txt");
+        EdgeWeightedGraph graph = new EdgeWeightedGraph("src/Output-Data/edges.txt");
 
         Dijkstra dijkstraSP = new Dijkstra();
         
         //System.out.println("Nodes # : " + graph.getNodeCount() + "\tEdges # " + graph.getEdgeCount());
         
-        
-        
-        dijkstraSP.parse(graph, 648);
-        ArrayList<Integer> suggestedPath = dijkstraSP.pathTo(1622);
-        System.out.println("The shortest path(distance) from 648 to 1622 is :");
+        //graph.print();
+   
+        dijkstraSP.parse(graph, 3711);
+        ArrayList<Integer> suggestedPath = dijkstraSP.pathTo(3952);
+        System.out.println("The shortest path(distance) from 3711 to 3952 is :");
         System.out.println(suggestedPath);
         
 
+		/**/
     }
 	
 }

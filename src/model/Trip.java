@@ -2,6 +2,7 @@ package model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 public class Trip {
 
@@ -48,11 +49,17 @@ public class Trip {
 	public void setRoute_id(int route_id) {
 		this.route_id = route_id;
 	}
-
-	@Override
-	public String toString() {
-		return "Trip [trip_id=" + trip_id + ", stopsList=" + stopsList + "]";
+	
+	public String getStopsString() {
+		String s = "";
+		for (Entry<String, Stop> stop : stopsList.entrySet()) {
+			//s+= "("+ Integer.toString(stop.getValue().getId()) +") " + stop.getValue().getStop_id() +",";
+			s+= Integer.toString(stop.getValue().getId()) + ",";
+		}
+		return s;
 	}
+
+
 	
 
 	

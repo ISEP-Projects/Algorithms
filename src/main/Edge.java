@@ -42,6 +42,18 @@ public class Edge implements Comparable<Edge> {
     public double weight() {
         return weight;
     }
+    
+    public int getBetweenness() {
+        return betweenness;
+    }
+
+    public void addBetweenness(int delta) {
+        betweenness += delta;
+    }
+
+    public void cleanBetweenness() {
+        betweenness = 0;
+    }
 
 
     @Override
@@ -51,6 +63,6 @@ public class Edge implements Comparable<Edge> {
 
     @Override
     public String toString() {
-        return "(" + Integer.toString(v) + ", " + Integer.toString(w) + ", " + Double.toString(weight) + ", " + Integer.toString(betweenness) + ")";
+        return "(" + Integer.toString(v) + ", " + Integer.toString(w) + ", " + Double.toString(weight) + ")";
     }
 }
