@@ -1,6 +1,7 @@
 package model;
 
-public class Stop {
+//Implement Comparable to order stops in list
+public class Stop implements Comparable<Stop>{
 	
 	private int id;
 	private String stop_id;
@@ -82,8 +83,15 @@ public class Stop {
 
 	@Override
 	public String toString() {
-		return "Stop [id=" + id + ", stop_id=" + stop_id + ", stop_name=" + stop_name + ", stop_lat=" + stop_lat
-				+ ", stop_lon=" + stop_lon + "]";
+		return "Stop [stop_id=" + stop_id + ", stop_name=" + stop_name + ", stop_sequence=" + stop_sequence
+				+ ", route_id=" + route_id + "]";
+	}
+
+	
+	//For ordering according to stop_sequence
+	@Override
+	public int compareTo(Stop s) {
+		return (int)(this.stop_sequence - s.getStop_sequence());
 	}
 	
 	

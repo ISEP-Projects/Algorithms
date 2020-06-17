@@ -15,6 +15,12 @@ public class Trip {
 		stopsList = new HashMap<>();
 	}
 	
+	public Trip(int trip_id, int route_id) {
+		this.route_id = route_id;
+		this.trip_id = trip_id;
+		stopsList = new HashMap<>();
+	}
+	
 	public int getTrip_id() {
 		return trip_id;
 	}

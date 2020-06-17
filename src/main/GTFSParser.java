@@ -27,7 +27,7 @@ public class GTFSParser {
  		
      */
 	
-    public static double distance(double lat1, double lat2, double lon1,
+    public static double distance(double lat1, double lon1, double lat2,
                                   double lon2) {
     	
     	double R = 6371000; //Earth's radius in metres
@@ -238,7 +238,7 @@ public class GTFSParser {
                 double lon1 = Double.parseDouble((String) stop1.get("longitude"));
                 double lat2 = Double.parseDouble((String) stop2.get("latitude"));
                 double lon2 = Double.parseDouble((String) stop2.get("longitude"));
-                double dis = distance(lat1, lat2, lon1, lon2);
+                double dis = distance(lat1, lon1, lat2, lon2);
                 writer3.write(Integer.toString(s1) + "," + Integer.toString(s2) + "," + Double.toString(dis) +  "\n");
             } catch (IOException e) {
                 e.printStackTrace();
