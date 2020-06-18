@@ -6,6 +6,7 @@ import java.util.*;
 public class GraphCluster {
     private HashSet<Edge> edgeSet;
     private HashSet<Integer> nodeSet;
+    
     public GraphCluster(EdgeWeightedGraph G)
     {
         edgeSet = new HashSet<>();
@@ -17,10 +18,12 @@ public class GraphCluster {
         edgeSet.forEach(Edge::cleanBetweenness);
         BFSShortestPath bfsShortestPath = new BFSShortestPath();
 
+        //Loop through all nodes and perform BFS
         for (int node:G.getNodeset())
         {
             bfsShortestPath.bfs(G, node);
             for (Integer integer : G.getNodeset()) {
+            	//add 'Betweenness' to every edge 
                 for (int t = integer; t != node; t = bfsShortestPath.edgeTo(t).other(t)) {
                     bfsShortestPath.edgeTo(t).addBetweenness(1);
                 }

@@ -245,7 +245,7 @@ public class GTFSReader {
 		double distance = Math.sqrt((x + y + z));
 		
 		return distance;
-		}
+	}
 	
 	
 	public void createEdges() {

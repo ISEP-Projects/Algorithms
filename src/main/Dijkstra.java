@@ -185,6 +185,7 @@ public class Dijkstra {
         ArrayList<Integer> suggestedPath = dijkstraSP.pathTo(3952);
         System.out.println("The shortest path(distance) from 3711 to 3952 is :");
         System.out.println(suggestedPath);
+        System.out.println("Number of nodes:" + suggestedPath.size());
         
 
 		/**/

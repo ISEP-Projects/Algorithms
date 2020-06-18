@@ -135,6 +135,7 @@ public class BFSShortestPath {
         ArrayList<Integer> suggestedPath = bfsSP.pathTo(3952);
         System.out.println("Shortest path from 3711 to 3952 is: ");
         System.out.println(suggestedPath);
+        System.out.println("Number of nodes:" + suggestedPath.size());
 
     }
 
